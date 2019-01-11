@@ -11,17 +11,17 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class MainApp extends Application {
 
     private GridPane pane = new GridPane();
-    private Label lblTitle, lblDirectAllocation, lblNativeUsed, lblmaxMemory;
-    private Label valDirectAllocation, valNativeUsed, valmaxMemory;
-    private Button btnUpdate, btnReopen;
+    private Label lblTitle, lblDirectAllocation, lblNativeUsed, lblMaxMemory, lblRuntimeMax, lblRuntimeFree, lblRuntimeTotal;
+    private Label descDirectAllocation, descNativeUsed, descMaxMemory, descRuntimeMax, descRuntimeFree, descRuntimeTotal;
+    private Label valDirectAllocation, valNativeUsed, valMaxMemory, valRuntimeMax, valRuntimeFree, valRuntimeTotal;
+    private Button btnUpdate;
 
-    private static ByteBuffer humonguosBuffer = ByteBuffer.allocateDirect(1024*1024*1024);
+    private static ByteBuffer buffer = ByteBuffer.allocateDirect(1024*1024*1024);
 
     public static void main(String[] args) {
         launch(args);
@@ -31,11 +31,10 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         stage.setTitle("Java Memory");
         this.initializeComponents();
-        this.updateValues();
         this.placeComponents(stage);
         this.registerListener();
-        stage.setResizable(false);
         stage.show();
+        this.updateValues();
     }
 
     private void initializeComponents() {
@@ -44,11 +43,33 @@ public class MainApp extends Application {
 
         lblDirectAllocation = new Label("Direct allocation:");
         lblNativeUsed = new Label("Native memory used:");
-        lblmaxMemory = new Label("Max direct memory:");
+        lblMaxMemory = new Label("Max direct memory:");
+
+        descDirectAllocation = new Label("ByteBuffer.capacity();");
+        descDirectAllocation.setStyle("-fx-font-family: monospace");
+        descNativeUsed = new Label("sun.misc.SharedSecrets.getJavaNioAccess().getDirectBufferPool().getMemoryUsed();");
+        descNativeUsed.setStyle("-fx-font-family: monospace");
+        descMaxMemory = new Label("sun.misc.VM.maxDirectMemory();");
+        descMaxMemory.setStyle("-fx-font-family: monospace");
 
         valDirectAllocation = new Label();
         valNativeUsed = new Label();
-        valmaxMemory = new Label();
+        valMaxMemory = new Label();
+
+        lblRuntimeMax = new Label("Runtime max memory:");
+        lblRuntimeFree = new Label("Runtime free memory:");
+        lblRuntimeTotal = new Label("Runtime total memory:");
+
+        descRuntimeMax = new Label("Runtime.getRuntime().maxMemory();");
+        descRuntimeMax.setStyle("-fx-font-family: monospace");
+        descRuntimeFree = new Label("Runtime.getRuntime().freeMemory();");
+        descRuntimeFree.setStyle("-fx-font-family: monospace");
+        descRuntimeTotal = new Label("Runtime.getRuntime().totalMemory();");
+        descRuntimeTotal.setStyle("-fx-font-family: monospace");
+
+        valRuntimeMax = new Label();
+        valRuntimeFree = new Label();
+        valRuntimeTotal = new Label();
 
         btnUpdate = new Button("Update");
         btnUpdate.setDefaultButton(true);
@@ -63,17 +84,33 @@ public class MainApp extends Application {
 
         pane.add(lblDirectAllocation, 0, 2);
         pane.add(lblNativeUsed, 0, 3);
-        pane.add(lblmaxMemory, 0, 4);
+        pane.add(lblMaxMemory, 0, 4);
 
-        pane.add(valDirectAllocation, 1, 2);
-        pane.add(valNativeUsed, 1, 3);
-        pane.add(valmaxMemory, 1, 4);
+        pane.add(descDirectAllocation, 1, 2);
+        pane.add(descNativeUsed, 1, 3);
+        pane.add(descMaxMemory, 1, 4);
 
-        pane.add(btnUpdate, 0, 6);
+        pane.add(valDirectAllocation, 2, 2);
+        pane.add(valNativeUsed, 2, 3);
+        pane.add(valMaxMemory, 2, 4);
+
+        pane.add(lblRuntimeMax, 0, 6);
+        pane.add(lblRuntimeFree, 0, 7);
+        pane.add(lblRuntimeTotal, 0, 8);
+
+        pane.add(descRuntimeMax, 1, 6);
+        pane.add(descRuntimeFree, 1, 7);
+        pane.add(descRuntimeTotal, 1, 8);
+
+        pane.add(valRuntimeMax, 2, 6);
+        pane.add(valRuntimeFree, 2, 7);
+        pane.add(valRuntimeTotal, 2, 8);
+
+        pane.add(btnUpdate, 0, 10);
 
         pane.setAlignment(Pos.CENTER);
 
-        stage.setScene(new Scene(pane, 300, 250));
+        stage.setScene(new Scene(pane, 900, 375));
     }
 
     private void registerListener() {
@@ -86,8 +123,12 @@ public class MainApp extends Application {
     }
 
     private void updateValues() {
-        this.valDirectAllocation.setText("" + humonguosBuffer.capacity());
+        this.valDirectAllocation.setText("" + buffer.capacity());
         this.valNativeUsed.setText("" + sun.misc.SharedSecrets.getJavaNioAccess().getDirectBufferPool().getMemoryUsed());
-        this.valmaxMemory.setText("" + sun.misc.VM.maxDirectMemory());
+        this.valMaxMemory.setText("" + sun.misc.VM.maxDirectMemory());
+
+        this.valRuntimeMax.setText("" + Runtime.getRuntime().maxMemory());
+        this.valRuntimeFree.setText("" + Runtime.getRuntime().freeMemory());
+        this.valRuntimeTotal.setText("" + Runtime.getRuntime().totalMemory());
     }
 }
