@@ -1,9 +1,18 @@
 language: java
 os:
-  - linux
+- linux
 jdk:
-  - oraclejdk8
+- oraclejdk8
 sudo: false
 script: mvn clean compile assembly:assembly cobertura:cobertura
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: releases
+  api_key:
+    secure: Tlnqr5upcWw3/f1SlyvvUUNf2QbCfIhsZs1yQa+/KQzfCXdk3dzfojIn2ZyXZsZcvB5VHqbWH5cYd0Mjf7VZdvz2lKc0M+6GFCwzXGVf/JH9Zo+G645XpOKpXyf9b0BDveB77bItsvQu/hJ5aMpejygH0Z2bUFKN+ANVzbUFJsYgHTXdlFhvlOqODS61tXArnw0RiAYkNMR96xUICDb/VyyPy1WLadOlKZ9+jfhkqEgMOxCi1e00Ewv5qN+PzpGyvKYLpntqbeGUeUkn+WrBJkoV3gU9vtXa7d6wcFddqwmUybY/DoIm5jAEWmasPn4lWiCdARJOwCN83D8L0yXFScgMpbcOJ0krVKJNoXLbw9/MUzB2i2aTHpZqzDcK56mD891jIAQSYcS23HznkKwJLYYq0FuLFlkiYHKpiBX1evnP+DBgNwSht4hotOw1uVwsrSIeDeS0KRyHXHLM1CQNr0MHOiqDidrNqqKP5dVPZR5xAwpus299ehEBOI6Rnw96DLFGYBZCghIy3drfv8XbsxTkLBHlBZMiQWNPuHsNWQJGvL8OR2K4Ha1HQWc+6LajBgWw8TXQE6VJQONwVoDCeD5YzMYIyLz5hFrM4cCqXKUndrBEfZFV/ksXGsgugMg6EzYtgVKvdncf0u74fpCFHXe2bC62s129ozoIy5nk9Uc=
+  file_glob: true
+  file: target/*.jar
+  skip_cleanup: true
+  on:
+    tags: true
