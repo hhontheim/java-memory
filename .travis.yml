@@ -1,0 +1,9 @@
+language: java
+os:
+  - linux
+jdk:
+  - oraclejdk8
+sudo: false
+script: mvn clean compile assembly:assembly cobertura:cobertura
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
