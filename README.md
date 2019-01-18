@@ -22,7 +22,7 @@ mvn clean compile assembly:single
 
 in the project's root. Then `cd` to the `target`-folder and there you go!
 
-## What can I do?
+## What to do
 
 Try running the `.jar` from shell:
 
